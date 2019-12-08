@@ -45,7 +45,7 @@ cab_type_map = {
 data['cab_type'] = data['cab_type'].map(cab_type_map)
 
 # condense size (mostly for quick testing)
-reduced_size = int(len(data) * 0.05)
+reduced_size = int(len(data) * 0.005)
 condensed_data = data.iloc[:reduced_size]
 
 # include relevant columns and separate the classes from feature vector
@@ -56,8 +56,8 @@ total_rows = len(filtered_data)
 training_size = int(total_rows * 0.6)
 test_size = total_rows - training_size
 
-training_data = filtered_data.iloc[:training_size]
-training_classes = classes.iloc[:training_size]
+training_data = filtered_data.iloc[:training_size].values.tolist()
+training_classes = classes.iloc[:training_size].values.tolist()
 # test_data = data.iloc[training_size:]
 # test_classes = classes.iloc[training_size:]
 
@@ -66,15 +66,15 @@ training_classes = classes.iloc[:training_size]
 model = Logistic()
 
 # train
-model.train(training_data.values.tolist(), training_classes.values.tolist())
+model.train(training_data, training_classes)
 
 # test
 # prediction = model.test
 
 # get errors
-# model.classification_error
+model.classification_error(training_data, training_classes)
 
 # plot
-# model.plot
+model.plot(training_data, training_classes)
 
 

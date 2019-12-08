@@ -7,14 +7,14 @@ import matplotlib.pyplot as plt
 def gradient_descent(W, data, classes):
     size = len(data)
     w = W
-    j = 0.001
+    j = 0.0005
+    print(data)
     reached = False
 
     while not reached:
         dw = derivative(w, data, classes, size)
         new_w = w - j * dw
         reached = small_array(w - new_w, j)
-        print(w)
         w = new_w
 
     return w
@@ -36,6 +36,7 @@ def add_bias(T):
 
 
 def derivative(w, data, classes, size):
+    theta = 0.2
     total = 0
     for i in range(size):
         y = classes[i]
@@ -44,11 +45,10 @@ def derivative(w, data, classes, size):
 
         total += x * (y - l)
 
-    return -total
+    return -total + theta * sum(w)
 
 
 def logistic(x, wT):
-    print(x, wT)
     denom = 1 + math.exp(-1 * wT.dot(x))
     return 1.0 / denom
 
@@ -59,7 +59,6 @@ def sigmoid(x, i, w):
         term = 1.0/(1 + math.exp(-1 * item * w[i]))
         a.append(term)
     return a
-
 
 
 class Logistic:
@@ -80,7 +79,9 @@ class Logistic:
     def test(self, x_tst, y_tst):
         pass
 
-    def classification_error(self, data, classes, size):
+    def classification_error(self, data_raw, classes):
+        data = add_bias(data_raw)
+        size = len(data)
         count = 0
         for i in range(size):
             y = classes[i]
@@ -89,27 +90,26 @@ class Logistic:
             if logistic(x, self.W) > 0.5:
                 pred = 1
 
-            # print(logistic(x, W), pred)
-
-            if pred == y[0]:
+            if pred == y:
                 count += 1
 
         print("Accuracy: ", count, "/", size, " = ", count / (size * 1.0))
         return count
 
-    def plot(self, data, classes, size):
+    def plot(self, data, classes):
+        size = len(data)
         tem = np.arange(-4., 4., 0.2)
-        sig = sigmoid(tem, 0, self.W)
+        # sig = sigmoid(tem, 0, self.W)
 
         for i in range(size):
             y = classes[i]
             x = data[i]
-            if y[0] == 1:
-                plt.scatter(x[0], y[0], s=10, color='red')
+            if y == 1:
+                plt.scatter(x[1], x[2], s=10, color='red')
             else:
-                plt.scatter(x[0], y[0], s=10, color='blue')
+                plt.scatter(x[1], x[2], s=10, color='blue')
 
         plt.ylabel('y')
         plt.xlabel('X')
-        plt.plot(tem, sig)
+        # plt.plot(tem, sig)
         plt.show()
