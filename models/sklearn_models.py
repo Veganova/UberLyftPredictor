@@ -2,6 +2,9 @@ from sklearn.svm import SVC
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegressionCV
+
 
 # abstract class that represents a model using the sklearn library
 class SklearnModel:
@@ -38,3 +41,12 @@ class KNN(SklearnModel):
     def __init__(self):
         self.classifier = KNeighborsClassifier()
         self.name = "k-Nearest Neighbor"
+
+class Logistic(SklearnModel):
+    def __init__(self):
+        self.classifier = LogisticRegression()
+        self.name = "Logistic Regression"
+        self.param_grid = {'C': [1, 10, 100, 1000], 'penalty': ['l1', 'l2']}
+        #
+        #     {'C': [1, 10, 100, 1000], 'gamma': [0.001, 0.0001], 'kernel': ['rbf']},
+        # ]

@@ -1,8 +1,8 @@
 import pandas as pd
 from sklearn.model_selection import GridSearchCV, train_test_split, KFold, cross_val_score
 
-from models.logistic import Logistic
-from models.sklearn_models import NaiveBayes, SVM, DecisionTree, KNN
+# from models.logistic import Logistic
+from models.sklearn_models import NaiveBayes, SVM, DecisionTree, KNN, Logistic
 from sklearn.preprocessing import StandardScaler
 
 pd.set_option('display.max_columns', None)
@@ -48,18 +48,6 @@ def read_data():
     }
     data['preferred'] = data['preferred'].map(cab_type_map)
 
-    # condense size (mostly for quick testing)
-    #reduced_size = int(len(data) * 0.005)
-    #condensed_data = data.iloc[:reduced_size]
-
-    # include relevant columns and separate the classes from feature vector
-    # filtered_data = condensed_data[['distance', 'source', 'destination', 'price', 'type', 'day_of_week', 'hour']]
-    # classes = condensed_data['cab_type']
-
-    # total_rows = len(filtered_data)
-    # training_size = int(total_rows * 0.6)
-    # test_size = total_rows - training_size
-
     return data
 
 # separate out features from target vals
@@ -70,7 +58,9 @@ scaled_features = StandardScaler().fit_transform(features)
 x_trn, x_tst, y_trn, y_tst = train_test_split(scaled_features, target, random_state=3000)
 
 # train and test models
-models = [NaiveBayes(), DecisionTree(), KNN()]#, SVM()]
+# models = [NaiveBayes(), DecisionTree(), KNN(), Logistic()]#, SVM()]
+# models = [Logistic()]
+models = [SVM()]
 for model in models:
     model.train(x_trn, y_trn)
 
@@ -78,9 +68,9 @@ for model in models:
     training_accuracy = model.accuracy(x_trn, y_trn)
     testing_accuracy = model.accuracy(x_tst, y_tst)
     print(model.name + ':')
-    print(f'\tTraining Accuracy: {training_accuracy:.2%}')
-    print(f'\tTesting Accuracy: {testing_accuracy:.2%}')
-
+    print('Training Accuracy:', training_accuracy)
+    print("Testing Accuracy:", testing_accuracy)
+#
 # test
 #prediction = model.test
 # get training errors
