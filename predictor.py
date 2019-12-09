@@ -5,6 +5,10 @@ from models.logistic import Logistic
 from models.sklearn_models import NaiveBayes, SVM, DecisionTree, KNN
 from sklearn.preprocessing import StandardScaler
 
+# hide annoying sklearn warnings
+from warnings import simplefilter
+simplefilter(action='ignore', category=FutureWarning)
+
 pd.set_option('display.max_columns', None)
 
 # read in data, output a dataframe
@@ -70,14 +74,16 @@ scaled_features = StandardScaler().fit_transform(features)
 x_trn, x_tst, y_trn, y_tst = train_test_split(scaled_features, target, random_state=3000)
 
 # train and test models
-models = [NaiveBayes(), DecisionTree(), KNN()]#, SVM()]
+models = [NaiveBayes(), DecisionTree(), KNN(), SVM()]
 for model in models:
-    model.train(x_trn, y_trn)
+    hyperparams = model.tune_hyperparameters(x_trn, y_trn)
+    model.train(x_trn, y_trn, hyperparams)
 
     # evaluate accuracy & print results
     training_accuracy = model.accuracy(x_trn, y_trn)
     testing_accuracy = model.accuracy(x_tst, y_tst)
     print(model.name + ':')
+    print('\tHyperparameters:', hyperparams)
     print(f'\tTraining Accuracy: {training_accuracy:.2%}')
     print(f'\tTesting Accuracy: {testing_accuracy:.2%}')
 
