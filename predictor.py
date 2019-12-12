@@ -87,11 +87,4 @@ for model in models:
     print(f'\tTraining Accuracy: {training_accuracy:.2%}')
     print(f'\tTesting Accuracy: {testing_accuracy:.2%}')
 
-# test
-#prediction = model.test
-# get training errors
-#model.classification_error(x_trn, y_trn)
-# plot
-#model.plot(training_data, training_classes)
-
 

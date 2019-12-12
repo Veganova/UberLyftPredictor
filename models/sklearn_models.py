@@ -1,4 +1,4 @@
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
@@ -15,7 +15,6 @@ class SklearnModel:
     def train(self, x_trn, y_trn, hyperparams):
         self.trained_model = self.classifier(**hyperparams)
         self.trained_model.fit(X=x_trn, y=y_trn)
-        print('trained!')
 
     def tune_hyperparameters(self, x_trn, y_trn):
         grid_search = GridSearchCV(self.classifier(), self.param_grid)
@@ -38,13 +37,13 @@ class NaiveBayes(SklearnModel):
 
 class SVM(SklearnModel):
     def __init__(self):
-        self.classifier = SVC
+        self.classifier = LinearSVC
         self.name = "Support Vector Machine"
-        self.param_grid = {
-            'C': [0.001, 0.01, 0.1, 1, 10], 
-            'gamma' : [0.001, 0.01, 0.1, 1], 
-            'kernel': ['linear', 'poly', 'rbf', 'sigmoid']
-        }
+        self.param_grid = {}
+        #     'C': [0.001, 0.01, 0.1, 1, 10], 
+        #     'gamma' : [0.001, 0.01, 0.1, 1], 
+        #     'kernel': ['linear', 'poly', 'rbf', 'sigmoid']
+        # }
 
 class DecisionTree(SklearnModel):
     def __init__(self):
