@@ -3,6 +3,7 @@ from sklearn.model_selection import GridSearchCV, train_test_split, KFold, cross
 
 from models.logistic import Logistic
 from models.sklearn_models import NaiveBayes, SVM, DecisionTree, KNN
+from models.neural_network import NeuralNetwork
 from sklearn.preprocessing import StandardScaler
 
 # hide annoying sklearn warnings
@@ -56,11 +57,7 @@ def read_data():
     #reduced_size = int(len(data) * 0.005)
     #condensed_data = data.iloc[:reduced_size]
 
-    # include relevant columns and separate the classes from feature vector
-    # filtered_data = condensed_data[['distance', 'source', 'destination', 'price', 'type', 'day_of_week', 'hour']]
-    # classes = condensed_data['cab_type']
-
-    # total_rows = len(filtered_data)
+    # total_rows = len(condensed_data)
     # training_size = int(total_rows * 0.6)
     # test_size = total_rows - training_size
 
@@ -68,13 +65,15 @@ def read_data():
 
 # separate out features from target vals
 data = read_data()
-features, target = (data.iloc[:,:6], data["preferred"])
+features = data[['day_of_week','hour','source','destination','type','avg_distance']]
+target = data['preferred']
 scaled_features = StandardScaler().fit_transform(features)
 # create training and testing sets
 x_trn, x_tst, y_trn, y_tst = train_test_split(scaled_features, target, random_state=3000)
 
 # train and test models
-models = [NaiveBayes(), DecisionTree(), KNN(), SVM()]
+models = [NeuralNetwork()]
+#models = [NaiveBayes(), DecisionTree(), KNN(), SVM()]
 for model in models:
     hyperparams = model.tune_hyperparameters(x_trn, y_trn)
     model.train(x_trn, y_trn, hyperparams)

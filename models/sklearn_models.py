@@ -39,11 +39,14 @@ class SVM(SklearnModel):
     def __init__(self):
         self.classifier = LinearSVC
         self.name = "Support Vector Machine"
-        self.param_grid = {}
-        #     'C': [0.001, 0.01, 0.1, 1, 10], 
-        #     'gamma' : [0.001, 0.01, 0.1, 1], 
-        #     'kernel': ['linear', 'poly', 'rbf', 'sigmoid']
-        # }
+        self.param_grid = {
+            'C': [0.005, 0.01, 0.1, 1, 10, 20],
+            #'penalty': ['l1', 'l2'],
+            #'loss': ['hinge', 'squared_hinge'],
+            'multi_class': ['ovr', 'crammer_singer'],
+            'dual': [False], # recommended for large datasets
+            'max_iter': 3000 # default was too low
+        }
 
 class DecisionTree(SklearnModel):
     def __init__(self):
@@ -55,4 +58,4 @@ class KNN(SklearnModel):
     def __init__(self):
         self.classifier = KNeighborsClassifier
         self.name = "k-Nearest Neighbor"
-        self.param_grid = {'n_neighbors': [2, 3, 5, 7, 10]}
+        self.param_grid = {'n_neighbors': [5, 10, 15, 18, 20, 22, 25]}
