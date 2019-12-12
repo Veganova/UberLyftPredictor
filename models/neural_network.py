@@ -8,16 +8,17 @@ sigmoid = torch.nn.Sigmoid()
 
 # three layer neural net (2 hidden layers)
 class FeedForward3(torch.nn.Module):
-    # layer sizes = list of length 4, activation_functions = list of length 3
-    def __init__(self, layer_sizes, activation_functions): 
+    # layer sizes = list of length 2, activation_functions = list of length 3
+    def __init__(self, hidden_layer_sizes, activation_functions): 
         super(FeedForward3, self).__init__()
-        self.layer_sizes = layer_sizes
+        self.input_layer_size = 6
+        self.hidden_layer_sizes = hidden_layer_sizes
         self.af1 = activation_functions[0]
         self.af2 = activation_functions[1]
         self.af3 = activation_functions[2]
-        self.weights1 = torch.nn.Linear(self.layer_sizes[0], self.layer_sizes[1])
-        self.weights2 = torch.nn.Linear(self.layer_sizes[1], self.layer_sizes[2])
-        self.weights3 = torch.nn.Linear(self.layer_sizes[2], self.layer_sizes[3])
+        self.weights1 = torch.nn.Linear(self.input_layer_size, self.hidden_layer_sizes[0])
+        self.weights2 = torch.nn.Linear(self.hidden_layer_sizes[0], self.hidden_layer_sizes[1])
+        self.weights3 = torch.nn.Linear(self.hidden_layer_sizes[1], 1)
 
     def forward(self, x):
         hidden1_in = self.weights1(x)
@@ -31,19 +32,27 @@ class FeedForward3(torch.nn.Module):
 
 class NeuralNetwork:
     def __init__(self):
-        self.model = FeedForward3([6, 12, 8, 1], [sigmoid, relu, sigmoid])
+        self.model = FeedForward3([10, 8], [sigmoid, relu, sigmoid])
         self.name = "Neural Network"
 
     def train(self, x_trn, y_trn, hyperparams):
         print('beginning training')
         x_trn_tensor = self.tensor(x_trn)
         y_trn_tensor = self.tensor(y_trn.to_numpy())
+
+        optimizer = torch.optim.SGD(self.model.parameters(), lr = 0.01) # use SGD to optimize
+        criterion = torch.nn.MSELoss()
+
         # train model
-        optimizer = torch.optim.SGD(self.model.parameters(), lr = 0.02) # use SGD to optimize
-        for i in range(0, 2000): # how to determine range??
-            output = self.model(x_trn_tensor)
-            criterion = torch.nn.MSELoss()
-            loss = criterion(output, y_trn_tensor)
+        self.model.train()
+        for i in range(0, 100): # how to determine range?
+            optimizer.zero_grad()
+            # feed forward
+            predicted = self.model(x_trn_tensor)
+            # compute loss
+            loss = criterion(predicted, y_trn_tensor)
+            #print('Iteration {}: train loss: {}'.format(i, loss.item()))
+            # propogate backward
             loss.backward()
             optimizer.step() 
 
