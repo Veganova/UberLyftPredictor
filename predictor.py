@@ -3,6 +3,7 @@ from sklearn.model_selection import GridSearchCV, train_test_split, KFold, cross
 from models.sklearn_models import NaiveBayes, SVM, DecisionTree, KNN, Logistic
 from models.neural_network import NeuralNetwork
 from sklearn.preprocessing import StandardScaler
+import time
 
 # hide annoying sklearn warnings
 from warnings import simplefilter
@@ -65,6 +66,7 @@ x_trn, x_tst, y_trn, y_tst = train_test_split(scaled_features, target, random_st
 
 # train and test models
 # models = [NaiveBayes(), DecisionTree(), KNN(), Logistic(), SVM()]
+start_time = time.time()
 models = [NeuralNetwork()]
 for model in models:
     hyperparams = model.tune_hyperparameters(x_trn, y_trn)
@@ -77,3 +79,5 @@ for model in models:
     print('Training Accuracy:', training_accuracy)
     print("Testing Accuracy:", testing_accuracy)
 
+elapsed_time = time.time() - start_time
+print("Ran for ", elapsed_time, "seconds")

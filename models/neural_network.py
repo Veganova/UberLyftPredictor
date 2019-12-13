@@ -71,15 +71,15 @@ class NeuralNetwork:
             optimizer.step()
 
     def tune_hyperparameters(self, x_trn, y_trn):
-        reduced_size = 500
+        reduced_size = 5000
         X = x_trn[0: reduced_size]
         Y = y_trn[0: reduced_size]
 
-        hidden_layer_sizes = np.arange(2, 4, 1)
-        number_nodes = np.arange(6, 12, 3)
+        hidden_layer_sizes = np.arange(2, 6, 1)
+        number_nodes = np.arange(3, 12, 3)
         activation_functions_set = (relu, sigmoid)
-        loops = np.arange(500, 5000, 3000)
-        learning_rates = np.arange(0.05, 0.11, 0.02)
+        loops = np.arange(500, 10000, 3000)
+        learning_rates = np.arange(0.01, 0.11, 0.02)
 
 
         best_accuracy = 0
@@ -95,6 +95,7 @@ class NeuralNetwork:
             for each_layer_node_number in each_layer_node_number_combos:
                 for activation_functions in activation_function_combos:
                     print(i, total_iters)
+                    i+=1
                     for loop_size in loops:
                         for learning_rate in learning_rates:
                             temp_params = {
@@ -105,7 +106,6 @@ class NeuralNetwork:
                             }
                             self.train(X, Y, temp_params)
                             accuracy = self.accuracy(X, Y)
-                            i+=1
                             # only record if better accuracy found
                             if accuracy > best_accuracy:
                                 best_accuracy = accuracy
