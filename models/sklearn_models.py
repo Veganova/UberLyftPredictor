@@ -1,10 +1,9 @@
-from sklearn.svm import SVC
+from sklearn.svm import LinearSVC
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV
-
 
 # abstract class that represents a model using the sklearn library
 class SklearnModel:
@@ -17,7 +16,6 @@ class SklearnModel:
     def train(self, x_trn, y_trn, hyperparams):
         self.trained_model = self.classifier(**hyperparams)
         self.trained_model.fit(X=x_trn, y=y_trn)
-        print('trained!')
 
     def tune_hyperparameters(self, x_trn, y_trn):
         grid_search = GridSearchCV(self.classifier(), self.param_grid)
@@ -42,12 +40,15 @@ class NaiveBayes(SklearnModel):
 
 class SVM(SklearnModel):
     def __init__(self):
-        self.classifier = SVC
+        self.classifier = LinearSVC
         self.name = "Support Vector Machine"
         self.param_grid = {
-            'C': [0.001, 0.01, 0.1, 1, 10],
-            'gamma': [0.001, 0.01, 0.1, 1],
-            'kernel': ['linear', 'poly', 'rbf', 'sigmoid']
+            'C': [0.005, 0.01, 0.1, 1, 10, 20],
+            #'penalty': ['l1', 'l2'],
+            #'loss': ['hinge', 'squared_hinge'],
+            'multi_class': ['ovr', 'crammer_singer'],
+            'dual': [False], # recommended for large datasets
+            'max_iter': 3000 # default was too low
         }
 
 
@@ -62,7 +63,7 @@ class KNN(SklearnModel):
     def __init__(self):
         self.classifier = KNeighborsClassifier
         self.name = "k-Nearest Neighbor"
-        self.param_grid = {'n_neighbors': [2, 3, 5, 7, 10, 20, 50, 75, 100]}
+        self.param_grid = {'n_neighbors': [5, 10, 15, 18, 20, 22, 25]}
 
 
 class Logistic(SklearnModel):
@@ -70,3 +71,4 @@ class Logistic(SklearnModel):
         self.classifier = LogisticRegression
         self.name = "Logistic Regression"
         self.param_grid = {'C': [1, 10, 100, 1000]}  # , 'penalty': ['l1', 'l2']}
+

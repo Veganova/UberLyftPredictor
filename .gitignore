@@ -1,4 +1,10 @@
 uber_lyft_preference_partial.csv
 venv
 .idea
+<<<<<<< HEAD
 __pycache__
+=======
+
+__pycache__/
+*.pyc
+>>>>>>> e3e21938c8bbbd5c884445dfed0b6855d27c7433
