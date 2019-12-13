@@ -68,12 +68,12 @@ x_trn, x_tst, y_trn, y_tst = train_test_split(scaled_features, target, random_st
 models = [NeuralNetwork()]
 for model in models:
     hyperparams = model.tune_hyperparameters(x_trn, y_trn)
-    # model.train(x_trn, y_trn, hyperparams)
-    # # evaluate accuracy & print results
-    # training_accuracy = model.accuracy(x_trn, y_trn)
-    # testing_accuracy = model.accuracy(x_tst, y_tst)
-    # print(model.name + ':')
-    # print('Hyperparameters:', hyperparams)
-    # print('Training Accuracy:', training_accuracy)
-    # print("Testing Accuracy:", testing_accuracy)
+    model.train(x_trn, y_trn, hyperparams)
+    # evaluate accuracy & print results
+    training_accuracy = model.accuracy(x_trn, y_trn)
+    testing_accuracy = model.accuracy(x_tst, y_tst)
+    print(model.name + ':')
+    print('Hyperparameters:', hyperparams)
+    print('Training Accuracy:', training_accuracy)
+    print("Testing Accuracy:", testing_accuracy)
 
