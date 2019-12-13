@@ -5,6 +5,10 @@ from sklearn.model_selection import GridSearchCV, train_test_split, KFold, cross
 from models.sklearn_models import NaiveBayes, SVM, DecisionTree, KNN, Logistic
 from sklearn.preprocessing import StandardScaler
 
+# hide annoying sklearn warnings
+from warnings import simplefilter
+simplefilter(action='ignore', category=FutureWarning)
+
 pd.set_option('display.max_columns', None)
 
 # read in data, output a dataframe
@@ -55,27 +59,19 @@ data = read_data()
 features, target = (data.iloc[:,:6], data["preferred"])
 scaled_features = StandardScaler().fit_transform(features)
 # create training and testing sets
-x_trn, x_tst, y_trn, y_tst = train_test_split(scaled_features, target, random_state=3000)
+x_trn, x_tst, y_trn, y_tst = train_test_split(scaled_features, target, random_state=10000)
 
 # train and test models
-# models = [NaiveBayes(), DecisionTree(), KNN(), Logistic()]#, SVM()]
-# models = [Logistic()]
-models = [SVM()]
+models = [NaiveBayes(), DecisionTree(), KNN(), Logistic(), SVM()]
 for model in models:
-    model.train(x_trn, y_trn)
+    hyperparams = {}#model.tune_hyperparameters(x_trn, y_trn)
+    model.train(x_trn, y_trn, hyperparams)
 
     # evaluate accuracy & print results
     training_accuracy = model.accuracy(x_trn, y_trn)
     testing_accuracy = model.accuracy(x_tst, y_tst)
     print(model.name + ':')
+    print('\tHyperparameters:', hyperparams)
     print('Training Accuracy:', training_accuracy)
     print("Testing Accuracy:", testing_accuracy)
-#
-# test
-#prediction = model.test
-# get training errors
-#model.classification_error(x_trn, y_trn)
-# plot
-#model.plot(training_data, training_classes)
-
 
