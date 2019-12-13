@@ -33,17 +33,20 @@ class FeedForward3(torch.nn.Module):
 
 class NeuralNetwork:
     def __init__(self):
-        self.model = FeedForward3([6, 12, 8, 1], [relu, relu, sigmoid])
+        self.model = self.init_model()
         self.name = "Neural Network"
 
-    def train(self, x_trn, y_trn, hyperparams):
+    def init_model(self, hidden_layer_sizes=[12, 8], layer_functions=[relu, relu, sigmoid]):
+        return FeedForward3([6] + hidden_layer_sizes + [1], layer_functions)
+
+    def train(self, x_trn, y_trn, params):
         self.model.train()
         print('beginning training')
         x_trn_tensor = self.tensor(x_trn)
         y_trn_tensor = self.tensor(y_trn.to_numpy())
         # train model
-        optimizer = torch.optim.SGD(self.model.parameters(), lr=0.08) # use SGD to optimize
-        for i in range(0, 2000): # how to determine range??
+        optimizer = torch.optim.SGD(self.model.parameters(), lr=params["learning_rate"]) # use SGD to optimize
+        for i in range(0, params["loop_size"]): # how to determine range??
             optimizer.zero_grad()  # Forward pass
             output = self.model(x_trn_tensor)
             criterion = torch.nn.MSELoss()
@@ -53,6 +56,35 @@ class NeuralNetwork:
             optimizer.step()
 
     def tune_hyperparameters(self, x_trn, y_trn):
+        reduced_size = 5000
+        X = x_trn[0: reduced_size]
+        Y = y_trn[0: reduced_size]
+
+        hidden_layer_sizes = np.arange(3, 6, 1)
+        activation_functions = (relu, sigmoid)
+        loops = np.arange(500, 5000, 3000)
+        learning_rates = np.arange(0.05, 0.11, 0.02)
+
+        best_accuracy = 0
+        best_params = {}
+        for hidden_layer_size in hidden_layer_sizes:
+            for activation_function in activation_functions:
+                for loop_size in loops:
+                    for learning_rate in learning_rates:
+                        temp_params = {
+                            "hidden_layer_size": hidden_layer_size,
+                            "loop_size": loop_size,
+                            "activiation_function": activation_function,
+                            "learning_rate": learning_rate
+                        }
+                        self.model = self.init_model()
+                        self.train(X, Y, temp_params)
+                        accuracy = self.accuracy(X, Y)
+                        if accuracy > best_accuracy:
+                            best_accuracy = accuracy
+                            best_params = temp_params
+                            print(accuracy, best_params)
+
         return {} # do nothing
 
     def predict(self, x_vals):

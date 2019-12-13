@@ -56,7 +56,7 @@ def read_data():
 # separate out features from target vals
 data = read_data()
 # data = data[0:1000]
-features = data[['day_of_week','hour','source','destination','type','avg_distance']]
+features = data[['day_of_week', 'hour', 'source', 'destination', 'type', 'avg_distance']]
 target = data['preferred']
 scaled_features = StandardScaler().fit_transform(features)
 # create training and testing sets
@@ -67,13 +67,13 @@ x_trn, x_tst, y_trn, y_tst = train_test_split(scaled_features, target, random_st
 # models = [NaiveBayes(), DecisionTree(), KNN(), Logistic(), SVM()]
 models = [NeuralNetwork()]
 for model in models:
-    hyperparams = {}#model.tune_hyperparameters(x_trn, y_trn)
-    model.train(x_trn, y_trn, hyperparams)
-    # evaluate accuracy & print results
-    training_accuracy = model.accuracy(x_trn, y_trn)
-    testing_accuracy = model.accuracy(x_tst, y_tst)
-    print(model.name + ':')
-    print('Hyperparameters:', hyperparams)
-    print('Training Accuracy:', training_accuracy)
-    print("Testing Accuracy:", testing_accuracy)
+    hyperparams = model.tune_hyperparameters(x_trn, y_trn)
+    # model.train(x_trn, y_trn, hyperparams)
+    # # evaluate accuracy & print results
+    # training_accuracy = model.accuracy(x_trn, y_trn)
+    # testing_accuracy = model.accuracy(x_tst, y_tst)
+    # print(model.name + ':')
+    # print('Hyperparameters:', hyperparams)
+    # print('Training Accuracy:', training_accuracy)
+    # print("Testing Accuracy:", testing_accuracy)
 
