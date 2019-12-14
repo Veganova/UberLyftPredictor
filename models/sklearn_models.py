@@ -2,6 +2,7 @@ from sklearn.svm import LinearSVC
 from sklearn.naive_bayes import GaussianNB
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import GridSearchCV
 
 # abstract class that represents a model using the sklearn library
@@ -29,11 +30,13 @@ class SklearnModel:
         accuracy = self.trained_model.score(x_vals, y_vals)
         return accuracy
 
+
 class NaiveBayes(SklearnModel):
     def __init__(self):
         self.classifier = GaussianNB
         self.name = "Gaussian Naive Bayes"
         self.param_grid = {}
+
 
 class SVM(SklearnModel):
     def __init__(self):
@@ -48,14 +51,24 @@ class SVM(SklearnModel):
             'max_iter': 3000 # default was too low
         }
 
+
 class DecisionTree(SklearnModel):
     def __init__(self):
         self.classifier = DecisionTreeClassifier
         self.name = "Decision Tree"
         self.param_grid = {'criterion': ['gini', 'entropy']}
 
+
 class KNN(SklearnModel):
     def __init__(self):
         self.classifier = KNeighborsClassifier
         self.name = "k-Nearest Neighbor"
         self.param_grid = {'n_neighbors': [5, 10, 15, 18, 20, 22, 25]}
+
+
+class Logistic(SklearnModel):
+    def __init__(self):
+        self.classifier = LogisticRegression
+        self.name = "Logistic Regression"
+        self.param_grid = {'C': [1, 10, 100, 1000]}  # , 'penalty': ['l1', 'l2']}
+

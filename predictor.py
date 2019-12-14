@@ -1,10 +1,9 @@
 import pandas as pd
 from sklearn.model_selection import GridSearchCV, train_test_split, KFold, cross_val_score
-
-from models.logistic import Logistic
-from models.sklearn_models import NaiveBayes, SVM, DecisionTree, KNN
+from models.sklearn_models import NaiveBayes, SVM, DecisionTree, KNN, Logistic
 from models.neural_network import NeuralNetwork
 from sklearn.preprocessing import StandardScaler
+import time
 
 # hide annoying sklearn warnings
 from warnings import simplefilter
@@ -53,37 +52,32 @@ def read_data():
     }
     data['preferred'] = data['preferred'].map(cab_type_map)
 
-    # condense size (mostly for quick testing)
-    #reduced_size = int(len(data) * 0.005)
-    #condensed_data = data.iloc[:reduced_size]
-
-    # total_rows = len(condensed_data)
-    # training_size = int(total_rows * 0.6)
-    # test_size = total_rows - training_size
-
     return data
 
 # separate out features from target vals
 data = read_data()
-features = data[['day_of_week','hour','source','destination','type','avg_distance']]
+# data = data[0:1000]
+features = data[['day_of_week', 'hour', 'source', 'destination', 'type', 'avg_distance']]
 target = data['preferred']
 scaled_features = StandardScaler().fit_transform(features)
 # create training and testing sets
-x_trn, x_tst, y_trn, y_tst = train_test_split(scaled_features, target, random_state=3000)
+
+x_trn, x_tst, y_trn, y_tst = train_test_split(scaled_features, target, random_state=300)
 
 # train and test models
+# models = [NaiveBayes(), DecisionTree(), KNN(), Logistic(), SVM()]
+start_time = time.time()
 models = [NeuralNetwork()]
-#models = [NaiveBayes(), DecisionTree(), KNN(), SVM()]
 for model in models:
     hyperparams = model.tune_hyperparameters(x_trn, y_trn)
     model.train(x_trn, y_trn, hyperparams)
-
     # evaluate accuracy & print results
     training_accuracy = model.accuracy(x_trn, y_trn)
     testing_accuracy = model.accuracy(x_tst, y_tst)
     print(model.name + ':')
-    print('\tHyperparameters:', hyperparams)
-    print(f'\tTraining Accuracy: {training_accuracy:.2%}')
-    print(f'\tTesting Accuracy: {testing_accuracy:.2%}')
+    print('Hyperparameters:', hyperparams)
+    print('Training Accuracy:', training_accuracy)
+    print("Testing Accuracy:", testing_accuracy)
 
-
+elapsed_time = time.time() - start_time
+print("Ran for ", elapsed_time, "seconds")
