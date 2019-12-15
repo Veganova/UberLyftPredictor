@@ -65,19 +65,18 @@ scaled_features = StandardScaler().fit_transform(features)
 x_trn, x_tst, y_trn, y_tst = train_test_split(scaled_features, target, random_state=300)
 
 # train and test models
-# models = [NaiveBayes(), DecisionTree(), KNN(), Logistic(), SVM()]
 start_time = time.time()
-models = [NeuralNetwork()]
+models = [NaiveBayes(), DecisionTree(), KNN(), Logistic(), SVM(), NeuralNetwork()]
 for model in models:
+    print(model.name + ':')
     hyperparams = model.tune_hyperparameters(x_trn, y_trn)
+    print('\tHyperparameters:', hyperparams)
     model.train(x_trn, y_trn, hyperparams)
     # evaluate accuracy & print results
     training_accuracy = model.accuracy(x_trn, y_trn)
     testing_accuracy = model.accuracy(x_tst, y_tst)
-    print(model.name + ':')
-    print('Hyperparameters:', hyperparams)
-    print('Training Accuracy:', training_accuracy)
-    print("Testing Accuracy:", testing_accuracy)
+    print('\tTraining Accuracy:', training_accuracy)
+    print("\tTesting Accuracy:", testing_accuracy)
 
 elapsed_time = time.time() - start_time
 print("Ran for ", elapsed_time, "seconds")

@@ -56,7 +56,7 @@ class NeuralNetwork:
         self.model = self.init_model(each_layer_node_number, activiation_functions)
         self.model.train()
 
-        print('beginning training')
+        #print('beginning training')
         x_trn_tensor = self.tensor(x_trn)
         y_trn_tensor = self.tensor(y_trn.to_numpy())
 
@@ -90,7 +90,7 @@ class NeuralNetwork:
         best_params = {}
 
         for hidden_layer_size in hidden_layer_sizes:
-            print("HIDDEN LAYER SIZE: ", hidden_layer_size)
+            print("\tHIDDEN LAYER SIZE: ", hidden_layer_size)
             each_layer_node_number_combos = self.combos(number_nodes, hidden_layer_size)
             activation_function_combos = self.combos(activation_functions_set, hidden_layer_size)
 
@@ -98,7 +98,7 @@ class NeuralNetwork:
             i = 0
             for each_layer_node_number in each_layer_node_number_combos:
                 for activation_functions in activation_function_combos:
-                    print(i, total_iters)
+                    #print(i, total_iters)
                     i+=1
                     for loop_size in loops:
                         for learning_rate in learning_rates:
@@ -114,7 +114,8 @@ class NeuralNetwork:
                             if accuracy > best_accuracy:
                                 best_accuracy = accuracy
                                 best_params = temp_params
-                                print(accuracy, best_params)
+                                print('\tAccuracy:', accuracy)
+                                print('\tParams:', best_params)
 
         return best_params
 
@@ -131,7 +132,7 @@ class NeuralNetwork:
             for next_comb in next_combs:
                 copy = next_comb.copy()
                 copy.append(el)
-                print(l, copy)
+                #print(l, copy)
                 comb.append(copy)
 
         return comb

@@ -44,11 +44,9 @@ class SVM(SklearnModel):
         self.name = "Support Vector Machine"
         self.param_grid = {
             'C': [0.005, 0.01, 0.1, 1, 10, 20],
-            #'penalty': ['l1', 'l2'],
-            #'loss': ['hinge', 'squared_hinge'],
             'multi_class': ['ovr', 'crammer_singer'],
             'dual': [False], # recommended for large datasets
-            'max_iter': 3000 # default was too low
+            'max_iter': [3000] # default was too low
         }
 
 
